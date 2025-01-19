@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-db
+  namespace: memos
+spec:
+  selector:
+    app: memos-db-pod
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: memos-ingress
+  namespace: memos
+  labels:
+    name: memos
+  annotations:
+    spec.ingressClassName: traefik
+spec:
+  rules:
+    - host: memos.sysgwan.xyz
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: svc-app
+                port:
+                  number: 5230

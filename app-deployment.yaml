@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memos-app
+  namespace: memos
+  labels:
+    name: memos-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: memos-app-pod
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: memos-app-pod
+    spec:
+      containers:
+        - image: neosmemo/memos:stable
+          name: memos-app
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "128M"
+          ports:
+            - containerPort: 5230
+              name: http
+          volumeMounts:
+            - mountPath: /var/opt/memos
+              name: data
+          env:
+            - name: MEMOS_DRIVER
+              value: postgres
+            - name: MEMOS_DSN
+              value: "user=memos password=secretmemos dbname=memosdb host=svc-db sslmode=disable"
+      volumes:
+        - name: data
+          emptyDir: {}

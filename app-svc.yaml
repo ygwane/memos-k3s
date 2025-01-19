@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-app
+  namespace: memos
+spec:
+  selector:
+    name: memos-app-pod
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 5230
+      protocol: TCP
+      targetPort: 5230

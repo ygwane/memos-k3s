@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memos-db
+  namespace: memos
+spec:
+  selector:
+    matchLabels:
+      app: memos-db-pod # has to match .spec.template.metadata.labels
+  serviceName: "memos-db-svc"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: memos-db-pod # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: memos-db
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: db
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_USER
+              value: memos
+            - name: POSTGRES_PASSWORD
+              value: secretmemos
+            - name: POSTGRES_DB
+              value: memosdb
+  volumeClaimTemplates:
+    - metadata:
+        name: db
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "local-path"
+        resources:
+          requests:
+            storage: 2Gi
