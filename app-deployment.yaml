@@ -40,4 +40,5 @@ spec:
               value: "user=memos password=secretmemos dbname=memosdb host=svc-db sslmode=disable"
       volumes:
         - name: data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: lh-app-pvc

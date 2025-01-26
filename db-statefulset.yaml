@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: memos-db-pod # has to match .spec.template.metadata.labels
-  serviceName: "memos-db-svc"
+  serviceName: "svc-db"
   replicas: 1 # by default is 1
   template:
     metadata:
@@ -22,8 +22,8 @@ spec:
             - containerPort: 5432
               name: postgres
           volumeMounts:
-            - name: db
-              mountPath: /var/lib/postgresql/data
+            - name: lh-db-pvc
+              mountPath: /var/lib/postgresql
           env:
             - name: POSTGRES_USER
               value: memos
@@ -33,10 +33,10 @@ spec:
               value: memosdb
   volumeClaimTemplates:
     - metadata:
-        name: db
+        name: lh-db-pvc
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: "local-path"
+        storageClassName: "longhorn"
         resources:
           requests:
             storage: 2Gi
